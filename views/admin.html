@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Administration · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Administration</div>
+  <nav><a href="/leaderboard">Leaderboard</a><a href="#" id="logout">Sign out</a></nav>
+</header>
+<main class="shell fade">
+  <div class="eyebrow">Operations console</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-bottom:28px;">Administration</h1>
+
+  <h2 class="eyebrow">Operators</h2>
+  <div class="card" style="padding:0;margin-bottom:36px;">
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>PC</th><th>Phase</th><th>Score</th><th>Elapsed</th><th>Session</th><th>Actions</th></tr></thead>
+      <tbody id="players"></tbody>
+    </table>
+  </div>
+
+  <h2 class="eyebrow">Recent submissions</h2>
+  <div class="card" style="padding:0;margin-bottom:36px;">
+    <table>
+      <thead><tr><th>Player</th><th>Round</th><th>Flag</th><th>Result</th><th>Time</th></tr></thead>
+      <tbody id="subs"></tbody>
+    </table>
+  </div>
+
+  <h2 class="eyebrow">Round metrics</h2>
+  <div class="card" style="padding:0;">
+    <table>
+      <thead><tr><th>Player</th><th>Round</th><th>Start</th><th>End</th><th>Elapsed</th></tr></thead>
+      <tbody id="metrics"></tbody>
+    </table>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+async function load() {
+  const r = await fetch('/admin/data').then(r => r.json());
+  const ps = document.getElementById('players'); ps.innerHTML = '';
+  r.players.forEach(p => {
+    ps.insertAdjacentHTML('beforeend', `<tr>
+      <td class="mono muted">#${p.id}</td><td>${p.name}</td><td class="mono">${p.pc_number}</td>
+      <td class="mono">${String(p.current_round).padStart(2,'0')}/10</td><td>${p.total_score}</td>
+      <td class="mono">${LAB.fmtTime(p.total_elapsed_seconds)}</td>
+      <td class="small">${p.active_session ? 'active' : 'terminated'}</td>
+      <td class="small">
+        <a href="#" onclick="reset(${p.id});return false;">reset</a> ·
+        <a href="#" onclick="terminate(${p.id});return false;">terminate</a> ·
+        <a href="#" onclick="unlock(${p.id});return false;">unlock</a>
+      </td></tr>`);
+  });
+  const ss = document.getElementById('subs'); ss.innerHTML = '';
+  r.submissions.forEach(s => ss.insertAdjacentHTML('beforeend', `<tr>
+    <td class="muted">#${s.player_id}</td><td>${s.round_number}</td>
+    <td class="mono small">${s.submitted_flag || ''}</td>
+    <td class="${s.is_correct ? '' : 'muted'}">${s.is_correct ? 'OK' : 'REJECT'}</td>
+    <td class="muted small">${new Date(s.timestamp).toISOString().slice(0,19).replace('T',' ')}</td></tr>`));
+  const ms = document.getElementById('metrics'); ms.innerHTML = '';
+  r.metrics.forEach(m => ms.insertAdjacentHTML('beforeend', `<tr>
+    <td class="muted">#${m.player_id}</td><td>${m.round_number}</td>
+    <td class="muted small">${new Date(m.start_time).toISOString().slice(11,19)}</td>
+    <td class="muted small">${m.end_time ? new Date(m.end_time).toISOString().slice(11,19) : '—'}</td>
+    <td class="mono">${m.elapsed_seconds != null ? LAB.fmtTime(m.elapsed_seconds) : '—'}</td></tr>`));
+}
+async function reset(id) { if(confirm('Reset operator '+id+'?')) { await LAB.api('/admin/reset/'+id); load(); } }
+async function terminate(id) { if(confirm('Terminate session '+id+'?')) { await LAB.api('/admin/terminate/'+id); load(); } }
+async function unlock(id) { const r = prompt('Unlock to round (1-10):','1'); if(r){ await LAB.api('/admin/unlock/'+id, { round: parseInt(r,10) }); load(); } }
+document.getElementById('logout').onclick = async (e) => { e.preventDefault(); await LAB.api('/admin/logout'); location.href='/'; };
+load();
+</script>
+</body></html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 08 · Carrier Channel</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 08 · Carrier Channel</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>08 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Acrostic steganography</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Carrier channel transcript</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">Eighteen operational log entries are captured below. The transmission carries an embedded message visible only through structural observation. No tooling required.</p>
+
+  <div class="card mono" style="margin-top:28px;font-size:12px;line-height:1.9;color:#bbb;">
+    <div class="eyebrow" style="margin-bottom:14px;">CARRIER LOG · TX-CHANNEL 042</div>
+<div>[02:11:09Z TX042] <b><i>C</i></b>arrier handshake established with node A7</div>
+<div>[02:11:10Z TX042] <b><i>T</i></b>elemetry channel synchronized across band 3</div>
+<div>[02:11:11Z TX042] <b><i>F</i></b>rame 0x0014 dispatched to forward relay</div>
+<div>[02:11:12Z TX042] <b><i>{</i></b>{SIGNAL_BLOCK} acknowledged by ground station</div>
+<div>[02:11:13Z TX042] <b><i>F</i></b>orward link operational · latency 22ms</div>
+<div>[02:11:14Z TX042] <b><i>I</i></b>nbound packet stream verified · CRC OK</div>
+<div>[02:11:15Z TX042] <b><i>R</i></b>elay node B2 reporting nominal status</div>
+<div>[02:11:16Z TX042] <b><i>S</i></b>ync delta within operational tolerance</div>
+<div>[02:11:17Z TX042] <b><i>T</i></b>hroughput stabilized at 1.2 Mbps</div>
+<div>[02:11:18Z TX042] <b><i>_</i></b>INTERNAL_ diagnostic ping returned OK</div>
+<div>[02:11:19Z TX042] <b><i>L</i></b>ink quality indicator measured at 0.94</div>
+<div>[02:11:20Z TX042] <b><i>E</i></b>cho test completed across all bands</div>
+<div>[02:11:21Z TX042] <b><i>T</i></b>ransponder ID NX-17 verified by uplink</div>
+<div>[02:11:22Z TX042] <b><i>T</i></b>ime drift correction applied: +14ms</div>
+<div>[02:11:23Z TX042] <b><i>E</i></b>ncryption rotor advanced — cycle 042</div>
+<div>[02:11:24Z TX042] <b><i>R</i></b>elay handshake confirmed by station 9</div>
+<div>[02:11:25Z TX042] <b><i>S</i></b>ession checkpoint persisted to archive</div>
+<div>[02:11:26Z TX042] <b><i>}</i></b>END_TRANSMISSION marker received</div>
+
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(8, document.getElementById('flag').value); };
+</script>
+</body></html>

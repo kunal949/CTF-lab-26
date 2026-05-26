@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase complete · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Evaluation Pipeline</div>
+  <nav><a href="/dashboard">Dashboard</a></nav>
+</header>
+
+<main class="shell fade" style="max-width:780px;">
+  <div class="eyebrow" id="phaseTag">PHASE — COMPLETE</div>
+  <h1 style="font-size:48px;font-weight:600;letter-spacing:-0.03em;margin:8px 0 14px;" id="title">Phase complete</h1>
+  <p class="muted" style="font-size:15px;max-width:520px;">Evaluation metrics recorded successfully. Backend verification confirmed and progression unlocked.</p>
+
+  <div class="grid grid-3" style="margin:36px 0;">
+    <div class="metric"><div class="label">Score</div><div class="value" id="score">0</div></div>
+    <div class="metric"><div class="label">Round time</div><div class="value mono" id="round">--:--:--</div></div>
+    <div class="metric"><div class="label">Total elapsed</div><div class="value mono" id="total">--:--:--</div></div>
+  </div>
+
+  <a class="btn" id="next" href="/dashboard">Proceed to next phase</a>
+</main>
+
+<script src="/static/js/app.js"></script>
+<script>
+(async () => {
+  const round = parseInt(location.pathname.split('/').pop(), 10);
+  const p = await LAB.player();
+  if (!p) return location.href = '/';
+  document.getElementById('phaseTag').textContent = `PHASE ${String(round).padStart(2,'0')} — COMPLETE`;
+  document.getElementById('title').textContent = `Phase ${String(round).padStart(2,'0')} complete`;
+  document.getElementById('score').textContent = p.total_score;
+  document.getElementById('total').textContent = LAB.fmtTime(p.total_elapsed_seconds);
+  // Fetch round-specific elapsed from server-side player not exposed; show total for now.
+  const r = await fetch('/api/evaluation/player').then(r=>r.json());
+  document.getElementById('round').textContent = LAB.fmtTime(r.player.total_elapsed_seconds);
+
+  const next = document.getElementById('next');
+  if (round >= 10) { next.textContent = 'View final evaluation'; next.href = '/evaluation-complete'; }
+  else next.href = `/challenge/${round + 1}`;
+})();
+</script>
+</body></html>

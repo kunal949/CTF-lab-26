@@ -1,0 +1,21 @@
+{
+  "name": "Internal Evaluation Platform",
+  "short_name": "LAB",
+  "version": "2.4.1",
+  "build": "production",
+  "internal": {
+    "modules": {
+      "dashboard": "/dashboard",
+      "leaderboard": "/leaderboard",
+      "deprecated": [
+        "/_legacy/op-blackmesh",
+        "/_classified/op-greycell",
+        "/_archive/op-redfork"
+      ]
+    },
+    "preload": [
+      "/static/css/main.css",
+      "/static/js/app.js"
+    ]
+  }
+}

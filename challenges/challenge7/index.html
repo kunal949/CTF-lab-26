@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 07 · Bundle Inspection</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 07 · Bundle Inspection</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>07 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Production source disclosure</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Bundle inspection</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">A production build was deployed with source maps still attached. Inspect the application bundle through your browser's Sources panel or by reading the served asset directly.</p>
+
+  <div class="grid grid-2" style="margin-top:28px;">
+    <div class="card">
+      <div class="eyebrow">Loaded modules</div>
+      <ul style="margin-top:14px;list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;">
+        <li>/challenges/challenge7/ChallengeSeven.tsx</li>
+        <li>/challenges/challenge7/ChallengeSeven.tsx.map</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Operational notice</div>
+      <p class="muted small" style="margin-top:10px;">Multiple variables resemble flag values. Only one is the genuine release artifact. Read carefully.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+// preload original source for the Sources panel
+fetch('/challenges/challenge7/ChallengeSeven.tsx');
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(7, document.getElementById('flag').value); };
+</script>
+</body></html>

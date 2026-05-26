@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 03 · Hidden Routes</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 03 · Hidden Routes</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>03 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Reconnaissance & directory discovery</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Hidden routes</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">
+    
+    HINT = KEEP AN EYE ON "/manifest.json" & TRY TO CHANGE THE LINK TOO!! <br><br>
+
+    An internal application route exists but has been intentionally omitted from public navigation. Reconnaissance of deployment metadata will reveal it. No brute force or wordlists required.</p>
+
+  <div class="grid grid-2" style="margin-top:32px;">
+    <div class="card">
+      <div class="eyebrow">Visible application surface</div>
+      <ul style="margin-top:14px;list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:13px;">
+        <li>— /dashboard</li>
+        <li>— /leaderboard</li>
+        <li>— /admin</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Operational hint</div>
+      <p class="muted small" style="margin-top:12px;">Modern applications publish deployment metadata describing internal modules, preload entries, and asset manifests. Inspect what this application advertises about itself.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(3, document.getElementById('flag').value); };
+</script>
+</body></html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 06 · IDOR</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 06 · IDOR</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>06 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Broken access control</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Records browser</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">Inspect operational records below. Identifiers are sequential. Authorization checks may be incomplete.</p>
+
+  <div class="grid grid-3" style="margin-top:28px;">
+    <button class="node" data-id="1" style="cursor:pointer;border:1px solid var(--border);"><h3>Record 01</h3><div class="meta">id=1</div></button>
+    <button class="node" data-id="2" style="cursor:pointer;border:1px solid var(--border);"><h3>Record 02</h3><div class="meta">id=2</div></button>
+    <button class="node" data-id="3" style="cursor:pointer;border:1px solid var(--border);"><h3>Record 03</h3><div class="meta">id=3</div></button>
+    <button class="node" data-id="4" style="cursor:pointer;border:1px solid var(--border);"><h3>Record 04</h3><div class="meta">id=4</div></button>
+    <button class="node" data-id="5" style="cursor:pointer;border:1px solid var(--border);"><h3>Record 05</h3><div class="meta">id=5</div></button>
+  </div>
+
+  <!-- HINT 
+  
+  IT IS SIMPLE THEN YOU THINK!!
+
+  JUST START WHERE NUMBER STARTS AND THATS IT!!!!
+
+  -->
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Manual fetch</div>
+    <p class="muted small" style="margin-top:8px;">Fetch a record by id. Direct object reference.</p>
+    <div style="display:flex;gap:12px;margin-top:14px;">
+      <input id="rid" placeholder="id" style="max-width:120px;"/>
+      <button class="btn" id="fetch" style="width:auto;padding:14px 28px;">Fetch</button>
+    </div>
+    <pre class="mono" id="out" style="margin-top:18px;background:var(--bg);border:1px solid var(--border);padding:14px;min-height:80px;font-size:12px;white-space:pre-wrap;"></pre>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+const data = [
+  { id: 0, classification: 'ADMIN', operator: 'root', notes: 'restricted internal record', flag: 'CTF{IDOR_ENUMERATION_SUCCESS}' },
+  { id: 1, classification: 'OPERATOR', operator: 'archer', notes: 'standard mission entry' },
+  { id: 2, classification: 'OPERATOR', operator: 'wraith', notes: 'archived report' },
+  { id: 3, classification: 'OPERATOR', operator: 'echo', notes: 'deleted entry' },
+  { id: 4, classification: 'OPERATOR', operator: 'nomad', notes: 'restricted object' },
+  { id: 5, classification: 'OPERATOR', operator: 'halcyon', notes: 'empty response' }
+];
+function show(id) {
+  const rec = data.find(d => d.id === id);
+  document.getElementById('out').textContent = rec ? JSON.stringify(rec, null, 2) : `{ "error": "record not found" }`;
+}
+document.querySelectorAll('button.node').forEach(b => b.onclick = () => show(parseInt(b.dataset.id, 10)));
+document.getElementById('fetch').onclick = () => show(parseInt(document.getElementById('rid').value, 10));
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(6, document.getElementById('flag').value); };
+</script>
+</body></html>

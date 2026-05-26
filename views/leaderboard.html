@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Leaderboard · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Leaderboard</div>
+  <nav><a href="/dashboard">Dashboard</a><a href="/">Home</a></nav>
+</header>
+<main class="shell fade">
+  <div class="eyebrow">Public registry</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-bottom:24px;">Operator leaderboard</h1>
+  <div class="card" style="padding:0;">
+    <table>
+      <thead><tr><th>Rank</th><th>Name</th><th>Progress</th><th>Score</th><th>Total time</th><th>Last active</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => {
+  const r = await fetch('/api/evaluation/leaderboard').then(r=>r.json()).catch(()=>({leaderboard:[]}));
+  const rows = document.getElementById('rows');
+  if (!r.leaderboard || !r.leaderboard.length) {
+    rows.innerHTML = '<tr><td colspan="6" class="muted" style="padding:40px;text-align:center;">No operators registered.</td></tr>'; return;
+  }
+  r.leaderboard.forEach((p, i) => {
+    rows.insertAdjacentHTML('beforeend', `<tr>
+      <td class="mono muted">#${String(i+1).padStart(2,'0')}</td>
+      <td>${p.name}</td>
+      <td class="mono">${String(Math.min(p.current_round,10)).padStart(2,'0')} / 10</td>
+      <td>${p.total_score}</td>
+      <td class="mono">${LAB.fmtTime(p.total_elapsed_seconds)}</td>
+      <td class="muted small">${p.last_active ? new Date(p.last_active).toISOString().replace('T',' ').slice(0,19) : '—'}</td>
+    </tr>`);
+  });
+})();
+</script>
+</body></html>

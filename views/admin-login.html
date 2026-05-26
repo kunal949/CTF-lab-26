@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Administrator Access</div></header>
+<main class="shell fade" style="max-width:480px;">
+  <div class="eyebrow">Restricted</div>
+  <h1 style="font-size:32px;font-weight:600;letter-spacing:-0.02em;margin-bottom:24px;">Administrator sign-in</h1>
+  <div class="card">
+    <form id="f">
+      <div class="field"><label>Password</label><input type="password" id="pw" required/></div>
+      <button class="btn" type="submit">Authenticate</button>
+      <div id="err"></div>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const r = await LAB.api('/admin/login', { password: document.getElementById('pw').value });
+  if (r.ok) location.href = r.redirect;
+  else document.getElementById('err').innerHTML = '<div class="alert">Authentication failed</div>';
+};
+</script>
+</body></html>

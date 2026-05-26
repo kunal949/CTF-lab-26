@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 09 · Caesar Cipher</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 09 · Caesar Cipher</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>09 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Classical alphabet rotation</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Cipher rotation</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">Intercepted ciphertext appears below. Adjust the rotation shift to recover the original payload. Underscores, braces, and formatting are preserved. Hint: thirteen may matter.</p>
+
+  <div class="grid grid-2" style="margin-top:28px;">
+    <div class="card">
+      <div class="eyebrow">Ciphertext</div>
+      <pre class="mono" id="ct" style="margin-top:14px;font-size:18px;letter-spacing:0.05em;">PGS{PNRFNE_FUVSG_GUVEGRRA}</pre>
+      <div class="eyebrow" style="margin-top:24px;">Shift (1–25)</div>
+      <input id="shift" type="number" min="1" max="25" value="1" style="margin-top:10px;"/>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Decrypted output</div>
+      <pre class="mono" id="out" style="margin-top:14px;font-size:18px;letter-spacing:0.05em;color:#fff;">—</pre>
+      <p class="muted small" style="margin-top:24px;">Educational: alphabet rotation is one of the oldest substitution ciphers. Try common rotations.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+const ct = 'PGS{PNRFNE_FUVSG_GUVEGRRA}';
+function rot(s, n) {
+  return s.split('').map(c => {
+    if (c >= 'A' && c <= 'Z') return String.fromCharCode((c.charCodeAt(0) - 65 + n) % 26 + 65);
+    if (c >= 'a' && c <= 'z') return String.fromCharCode((c.charCodeAt(0) - 97 + n) % 26 + 97);
+    return c;
+  }).join('');
+}
+const out = document.getElementById('out');
+const shift = document.getElementById('shift');
+function update() { out.textContent = rot(ct, parseInt(shift.value, 10) || 0); }
+shift.addEventListener('input', update); update();
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(9, document.getElementById('flag').value); };
+</script>
+</body></html>

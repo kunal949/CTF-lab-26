@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8"/><title>Node 01</title>
+<link rel="stylesheet" href="/static/css/main.css"/></head><body>
+<main class="shell fade" style="max-width:780px;">
+<div class="eyebrow">Trace log fragment</div>
+<h1 style="font-size:28px;font-weight:600;">Data node 01</h1>
+<pre class="mono" style="background:var(--surface);border:1px solid var(--border);padding:20px;margin-top:20px;white-space:pre-wrap;">
+<!doctype html><html><head><meta charset="utf-8"/><title>Node 01</title>
+<link rel="stylesheet" href="/static/css/main.css"/></head><body>
+<main class="shell fade" style="max-width:780px;">
+<div class="eyebrow">Trace log fragment</div>
+<h1 style="font-size:28px;font-weight:600;">Data node 01</h1>
+<pre class="mono" style="background:var(--surface);border:1px solid var(--border);padding:20px;margin-top:20px;white-space:pre-wrap;">
+Cross-Site Scripting (XSS)<br><br>
+XSS is a vulnerability where attacker-controlled JavaScript executes inside a trusted web page.
+It happens when user input is inserted into HTML without proper sanitization or escaping.<br><br>
+Attackers commonly abuse HTML event handlers such as:
+<br>onerror
+<br>onload
+<br>onclick
+<br><br><br>Payload Analysis
+<br><br> TRY THIS!!!<img src="x" onerror="__sentinel_breach('SENTINEL')">
+<br><br>Breakdown
+<br><img src="x">
+<br>Attempts to load an image named "x".
+Since the image does not exist, the browser triggers an error event.
+onerror=""
+Executes JavaScript automatically when the image fails to load.
+<br><br>__sentinel_breach('SENTINEL')
+<br>Calls an internal function inside the challenge environment.
+The string 'SENTINEL' acts as the required trigger value.
+Why It Works
+The application accepts unsafe HTML input.
+Inline event handlers are not filtered or blocked.
+Browser automatically executes the JavaScript when the image load fails.
+Security Issue Demonstrated
+Improper input sanitization
+Unsafe HTML rendering
+Execution of attacker-controlled JavaScript
+Weak XSS filtering mechanisms
+
+</pre>
+<p class="muted small" style="margin-top:18px;">The visible candidate above failed validation. Continue investigating other nodes.</p>
+</main></body></html>
+
+</pre>
+<p class="muted small" style="margin-top:18px;">The visible candidate above failed validation. Continue investigating other nodes.</p>
+</main></body></html>

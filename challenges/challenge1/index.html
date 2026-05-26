@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 01 · The Unseen</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 01 · The Unseen</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>01 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Observation & patience</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-bottom:10px;">The Unseen</h1>
+  <p class="muted" style="max-width:620px;margin-bottom:32px;">A flag may exist within these data nodes. Inspect carefully. Not every value visible on screen is the value you need.</p>
+
+  <div class="node-grid">
+    <a class="node" href="/challenges/challenge1/node1.html" target="_blank">
+      <div><h3>Data node 01</h3><p class="muted small">Trace logs · partial parser output</p></div>
+      <div class="meta">FLAG CAN BE HERE</div>
+    </a>
+    <a class="node" href="/challenges/challenge1/node2.html" target="_blank">
+      <div><h3>Data node 02</h3><p class="muted small">Misleading encoded artifacts</p></div>
+      <div class="meta">FLAG CAN BE HERE</div>
+    </a>
+    <a class="node" href="/challenges/challenge1/node3.html" target="_blank">
+      <div><h3>Data node 03</h3><p class="muted small">Have you checked the console?</p></div>
+      <div class="meta">FLAG CAN BE HERE</div>
+    </a>
+  </div>
+
+  <div class="card" style="margin-top:36px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(1, document.getElementById('flag').value); };
+</script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "_comment": "Cross-reference index. Operator identity is composed of callsign + normalized station id + birth year.",
+  "schema": ["personnel_id", "callsign", "station", "dob"],
+  "operators": [
+    { "personnel_id": "P-0044", "callsign": "WRAITH",   "station": "NX-04", "dob": "18/02/1991" },
+    { "personnel_id": "P-0091", "callsign": "ECHO",     "station": "NX-09", "dob": "24/07/1985" },
+    { "personnel_id": "P-0117", "callsign": "ARCHER",   "station": "NX-17", "dob": "03/11/1987" },
+    { "personnel_id": "P-0134", "callsign": "NOMAD",    "station": "NX-12", "dob": "05/09/1993" },
+    { "personnel_id": "P-0182", "callsign": "HALCYON",  "station": "NX-22", "dob": "12/05/1990" },
+    { "personnel_id": "P-0207", "callsign": "SENTINEL", "station": "NX-31", "dob": "30/06/1982" }
+  ],
+  "_normalization_rule": "station identifiers must be stripped of non-alphanumeric characters before assembly"
+}

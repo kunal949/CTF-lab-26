@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 05 · Token Forgery</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 05 · Token Forgery</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>05 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <div class="eyebrow">Theme — Authentication trust failure</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">JWT validation gateway</h1>
+  <p class="muted" style="margin-top:8px;max-width:620px;">Military-grade verification · Secure enterprise signing. Submit a token to authenticate against the protected resource.</p><br>
+  <p class="muted" style="margin-top:8px;max-width:620px;">I KNOW THIS MIGHT BE HARD SO I HAVE HINT FOR YOU BUT MAKE SURE YOU READ EVERYTHING!!!  <a href="/challenges/challenge5/HINT.html" target="_blank">CLICK ME!!!!</a></p><br>
+
+  <div class="grid grid-2" style="margin-top:28px;">
+    <div class="card">
+      <div class="eyebrow">Current session token</div>
+      <pre class="mono" id="token" style="margin-top:14px;background:var(--bg);border:1px solid var(--border);padding:14px;white-space:pre-wrap;word-break:break-all;font-size:11px;"></pre>
+      <div class="eyebrow" style="margin-top:18px;">Decoded</div>
+      <pre class="mono" id="decoded" style="margin-top:8px;background:var(--bg);border:1px solid var(--border);padding:14px;white-space:pre-wrap;font-size:11px;"></pre>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Submit token</div>
+      <textarea id="t2" rows="6" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;" placeholder="Paste forged token..."></textarea>
+      <button class="btn" id="auth" style="margin-top:14px;">Authenticate</button>
+      <div id="result" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit recovered flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+
+function b64url(obj) {
+  return btoa(JSON.stringify(obj)).replace(/=+$/,'').replace(/\+/g,'-').replace(/\//g,'_');
+}
+function b64urlDecode(s) {
+  s = s.replace(/-/g,'+').replace(/_/g,'/'); while (s.length % 4) s += '=';
+  try { return atob(s); } catch { return ''; }
+}
+const header = { alg: 'HS256', typ: 'JWT' };
+const payload = { sub: 'operator', role: 'user', iat: Math.floor(Date.now()/1000) };
+const initial = `${b64url(header)}.${b64url(payload)}.s1gnATuRePLACEh01der`;
+document.getElementById('token').textContent = initial;
+document.getElementById('decoded').textContent = JSON.stringify({ header, payload }, null, 2);
+
+document.getElementById('auth').onclick = () => {
+  const tok = document.getElementById('t2').value.trim();
+  const parts = tok.split('.');
+  const out = document.getElementById('result');
+  if (parts.length < 2) { out.innerHTML = '<div class="alert">Malformed token</div>'; return; }
+  let h, p;
+  try { h = JSON.parse(b64urlDecode(parts[0])); p = JSON.parse(b64urlDecode(parts[1])); }
+  catch { out.innerHTML = '<div class="alert">Cannot decode</div>'; return; }
+  // Vulnerable: trusts alg=none and skips signature verification entirely.
+  if (h.alg === 'none') {
+    if (p.role === 'admin') {
+      out.innerHTML = '<div class="card" style="background:var(--bg);"><div class="eyebrow">Admin context established</div><div class="mono" style="margin-top:8px;">RECOVERED FLAG: CTF{JWT_NONE_ALG_BYPASS}</div></div>';
+      return;
+    }
+    out.innerHTML = '<div class="alert">Authenticated, but insufficient role</div>'; return;
+  }
+  out.innerHTML = '<div class="alert">Signature verification failed</div>';
+};
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(5, document.getElementById('flag').value); };
+</script>
+</body></html>

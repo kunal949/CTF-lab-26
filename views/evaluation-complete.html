@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Final Evaluation · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Evaluation Pipeline</div>
+  <nav>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/dashboard">Dashboard</a>
+  </nav>
+</header>
+
+<main class="shell fade">
+  <div class="eyebrow">Verification complete</div>
+  <h1 style="font-size:56px;font-weight:600;letter-spacing:-0.03em;line-height:1.05;">Final evaluation complete.</h1>
+  <p class="muted" style="margin-top:14px;max-width:620px;font-size:15px;">Evaluation pipeline completed successfully. All operational phases verified. Session locked pending administrator review.</p>
+
+  <div class="grid grid-4" style="margin:40px 0;">
+    <div class="metric"><div class="label">Operator</div><div class="value" id="op">—</div></div>
+    <div class="metric"><div class="label">Total score</div><div class="value" id="score">0</div></div>
+    <div class="metric"><div class="label">Total elapsed</div><div class="value mono" id="elapsed">--:--:--</div></div>
+    <div class="metric"><div class="label">Completed</div><div class="value mono" id="ts" style="font-size:16px;">—</div></div>
+  </div>
+
+  <div class="eyebrow">Phase ledger</div>
+  <div class="phase-list" id="phases"></div>
+
+  <div style="display:flex;gap:12px;margin-top:32px;">
+    <a class="btn ghost" href="/dashboard">Return to dashboard</a>
+    <a class="btn ghost" href="/leaderboard">View leaderboard</a>
+  </div>
+</main>
+
+<script src="/static/js/app.js"></script>
+<script>
+const TITLES = ['The Unseen','ASCII Reconstruction','Hidden Routes','XSS','Token Forgery','IDOR','Bundle Inspection','Carrier Channel','Caesar Cipher','Operator Dossier'];
+(async () => {
+  const p = await LAB.player();
+  if (!p) return location.href = '/';
+  document.getElementById('op').textContent = p.name;
+  document.getElementById('score').textContent = p.total_score;
+  document.getElementById('elapsed').textContent = LAB.fmtTime(p.total_elapsed_seconds);
+  document.getElementById('ts').textContent = p.completion_time ? new Date(p.completion_time).toISOString().replace('T',' ').slice(0,19) : '—';
+  const list = document.getElementById('phases');
+  for (let i = 1; i <= 10; i++) {
+    list.insertAdjacentHTML('beforeend', `
+      <div class="phase-row complete">
+        <div class="num">PHASE ${String(i).padStart(2,'0')}</div>
+        <div class="title">${TITLES[i-1]}</div>
+        <div class="status">Complete</div>
+        <div class="muted small mono" style="text-align:right;">verified</div>
+      </div>`);
+  }
+})();
+</script>
+</body></html>

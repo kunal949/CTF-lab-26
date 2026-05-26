@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Phase 10 · Operator Dossier</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head><body>
+<header class="topbar"><div class="brand"><strong>LAB</strong> Phase 10 · Operator Dossier</div>
+<nav><a href="/dashboard">Dashboard</a></nav></header>
+<main class="shell fade">
+  <div class="timer-strip">
+    <span>Phase <strong>10 / 10</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Elapsed <strong id="t">00:00:00</strong></span>
+    <span class="pill live">Active</span>
+  </div>
+
+  <!--  IN THIS ROUND YOU ARE A INVESTIGATOR HERE IS YOUR CLUE FOLLOW IT TO FIND THE FLAG !!!! 
+  
+[!] NOTICE: AGENT FOOTPRINT CORRELATION IN PROGRESS...
+──────────────────────────────────────────────────────────────────────
+Investigator Note:
+Think of this data like tracking a target through a hotel. Record A tells 
+us who checked into the lobby. Record B tells us what room keycard they 
+swiped. Record C shows their birth year on the guest registry. 
+
+SYSTEM ALERT: We have a security breach! An operator from 'Shift A' accessed 
+the server, but their workstation ID was typed with a broken keyboard that 
+dropped the hyphens. 
+
+[AI ANALYSIS]: Multiple profiles match the initial baseline criteria. 
+Do not stop if your first attempt fails; loop through the filtered suspects 
+and test each matching target profile against the validator to isolate the 
+true breach vector.
+──────────────────────────────────────────────────────────────────────
+-->
+
+  <div class="eyebrow">Theme — OSINT aggregation & investigative correlation</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;">Operator dossier reconstruction</h1>
+  <p class="muted" style="margin-top:8px;max-width:680px;">Three independent fragments are scattered across separate internal records. Correlate them to assemble a single operator identifier. Required: callsign, station identifier (normalized — strip non-alphanumeric), birth year. Final flag format: <span class="mono">CTF{CALLSIGN_STATION_YEAR}</span>.</p>
+
+  <div class="grid grid-2" style="margin-top:28px;">
+    <a class="card" href="/challenges/challenge10/personnel.html" target="_blank">
+      <div class="eyebrow">Record A</div>
+      <h3 style="margin-top:8px;">Personnel registry</h3>
+      <p class="muted small" style="margin-top:6px;">Active and archived operator entries.</p>
+    </a>
+    <a class="card" href="/challenges/challenge10/station-roster.html" target="_blank">
+      <div class="eyebrow">Record B</div>
+      <h3 style="margin-top:8px;">Station roster</h3>
+      <p class="muted small" style="margin-top:6px;">Workstation assignments and call signs.</p>
+    </a>
+    <a class="card" href="/challenges/challenge10/archive-log.html" target="_blank">
+      <div class="eyebrow">Record C</div>
+      <h3 style="margin-top:8px;">Archive log</h3>
+      <p class="muted small" style="margin-top:6px;">Historical metadata cards and incident notes.</p>
+    </a>
+    <a class="card" href="/challenges/challenge10/metadata.json" target="_blank">
+      <div class="eyebrow">Record D</div>
+      <h3 style="margin-top:8px;">Metadata index</h3>
+      <p class="muted small" style="margin-top:6px;">Machine-readable cross-reference document.</p>
+    </a>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Submit assembled flag</div>
+    <form id="f" style="display:flex;gap:12px;margin-top:14px;">
+      <input id="flag" placeholder="CTF{...}" autocomplete="off"/>
+      <button class="btn" style="width:auto;padding:14px 28px;">Validate</button>
+    </form>
+  </div>
+</main>
+<script src="/static/js/app.js"></script>
+<script>
+(async () => { const p = await LAB.player(); document.getElementById('score').textContent = p.total_score; LAB.startTimer('t', p.total_elapsed_seconds, Date.now()); })();
+document.getElementById('f').onsubmit = e => { e.preventDefault(); LAB.submitFlag(10, document.getElementById('flag').value); };
+</script>
+</body></html>

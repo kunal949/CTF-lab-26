@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mission Control · LAB</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Mission Control</div>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="#" id="logout">Sign out</a>
+  </nav>
+</header>
+
+<main class="shell fade">
+  <div class="eyebrow">Operator overview</div>
+  <h1 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-bottom:24px;">Mission control</h1>
+
+  <div class="grid grid-4" style="margin-bottom:36px;">
+    <div class="metric"><div class="label">Operator</div><div class="value" id="opName">—</div></div>
+    <div class="metric"><div class="label">Score</div><div class="value" id="opScore">0</div></div>
+    <div class="metric"><div class="label">Phase</div><div class="value" id="opPhase">01 / 10</div></div>
+    <div class="metric"><div class="label">Elapsed</div><div class="value mono" id="opElapsed">00:00:00</div></div>
+  </div>
+
+  <div class="eyebrow">Evaluation phases</div>
+  <div class="phase-list" id="phases"></div>
+</main>
+
+<script src="/static/js/app.js"></script>
+<script>
+const TITLES = [
+  'The Unseen','ASCII Fragment Reconstruction','Hidden Routes','Cross-Site Scripting',
+  'Token Forgery','Insecure Direct Object Reference','Bundle Inspection','Carrier Channel',
+  'Caesar Cipher','Operator Dossier'
+];
+(async () => {
+  const p = await LAB.player();
+  if (!p) return location.href = '/';
+  document.getElementById('opName').textContent = p.name;
+  document.getElementById('opScore').textContent = p.total_score;
+  document.getElementById('opPhase').textContent = String(p.current_round).padStart(2,'0') + ' / 10';
+  LAB.startTimer('opElapsed', p.total_elapsed_seconds, Date.now());
+
+  const list = document.getElementById('phases');
+  for (let i = 1; i <= 10; i++) {
+    const solved = p.solved_challenges.includes(i);
+    const isCurrent = i === p.current_round && !solved;
+    const locked = i > p.current_round;
+    const status = solved ? 'Complete' : (isCurrent ? 'Active' : (locked ? 'Locked' : 'Pending'));
+    const cls = solved ? 'complete' : (locked ? 'locked' : '');
+    const link = (solved || isCurrent) ? `<a href="${solved ? '/success/' + i : '/challenge/' + i}">${solved ? 'Review' : 'Open'} →</a>` : '<span class="muted small">—</span>';
+    list.insertAdjacentHTML('beforeend', `
+      <div class="phase-row ${cls}">
+        <div class="num">PHASE ${String(i).padStart(2,'0')}</div>
+        <div class="title">${TITLES[i-1]}</div>
+        <div class="status">${status}</div>
+        <div>${link}</div>
+      </div>`);
+  }
+})();
+document.getElementById('logout').onclick = async (e) => {
+  e.preventDefault();
+  await LAB.api('/api/auth/logout');
+  location.href = '/';
+};
+</script>
+</body></html>

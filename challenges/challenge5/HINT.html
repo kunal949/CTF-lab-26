@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>C5 HINT!!</title>
+  <link rel="stylesheet" href="/static/css/main.css"/>
+  <style>
+    /* Clean overrides for readability inside the hint module */
+    .hint-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px;
+      margin-top: 20px;
+      border-radius: 6px;
+    }
+    .hint-container h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .hint-container h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 18px;
+      margin-bottom: 6px;
+    }
+    .hint-container p, .hint-container li {
+      line-height: 1.6;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85); /* Adjust opacity based on your theme's text color */
+    }
+    .hint-container ul, .hint-container ol {
+      margin-top: 8px;
+      margin-bottom: 16px;
+      padding-left: 20px;
+    }
+    .hint-container li {
+      margin-bottom: 8px;
+    }
+    .code-snippet {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border-radius: 4px;
+      margin: 12px 0;
+    }
+    .highlight {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+<main class="shell fade" style="max-width:780px;">
+  <div class="eyebrow">Encoded artifacts</div>
+  <h1 style="font-size:28px;font-weight:600;letter-spacing:-0.02em;">C5 HINT!!</h1>
+
+  <div class="hint-container">
+    <div class="eyebrow" style="color:var(--primary); font-weight:700; text-align:center; letter-spacing:0.1em;">
+      ⚠️ HINT ARCHIVE · PHASE 05
+    </div>
+
+    <h2>🔒 The Core Logic: The "VIP Pass" Analogy</h2>
+    <p>Imagine you are trying to enter a VIP club. To get in, the security guard requires a <strong>Digital ID Badge</strong> (which is our JSON Web Token, or <strong>JWT</strong>).</p>
+    
+    <p>This badge is divided into three distinct sections:</p>
+    <ul>
+      <li><strong>The Instructions (Header):</strong> Tells the guard <u>how</u> to verify that the badge is real (e.g., <em>"Check my holographic stamp"</em>).</li>
+      <li><strong>The Details (Payload):</strong> Tells the guard who you are and your current clearance level (e.g., <em>"Name: Student, Role: Regular Guest"</em>).</li>
+      <li><strong>The Security Stamp (Signature):</strong> The actual cryptographic signature made by the club manager so no one can forge the data.</li>
+    </ul>
+
+    <h3>The Security Flaw (The Vulnerability)</h3>
+    <p>Normally, if you take a pen and manually change your role from <code>"Regular Guest"</code> to <code>"VIP Admin"</code>, the holographic stamp will no longer match your modifications, and the guard will reject the badge.</p>
+    
+    <p>However, the verification gateway in this lab has a critical logic flaw: <strong>It reads your instructions first, and blindly trusts them without verification.</strong></p>
+    
+    <p>By updating the instruction algorithm (<span class="highlight">alg</span>) to <strong><code>"none"</code></strong>, you are explicitly telling the gateway: <em>"This is a specific type of token that does not carry a signature block. Skip the signature check entirely."</em></p>
+    
+    <p>Because the backend logic is vulnerable, it skips verification, parses your modified details, reads <strong><code>"role": "admin"</code></strong>, and grants administrative context access.</p>
+
+    <h2>🛠️ Step-by-Step Solution Guide</h2>
+    <p>Follow these precise steps to open your browser tools, execute the exploit payload, and capture the flag.</p>
+
+    <ol>
+      <li>
+        <strong>Open the Browser Console:</strong>
+        <ul>
+          <li>Right-click anywhere on the empty space of the challenge page and select <strong>Inspect</strong> (or press <kbd>F12</kbd> / <kbd>Fn + F12</kbd>).</li>
+          <li>Navigate to the <strong>Console</strong> tab in the developer toolkit panel that appears.</li>
+        </ul>
+      </li>
+      
+      <li>
+        <strong>Generate the Forged Token:</strong>
+        <p>Copy the following block of code execution script:</p>
+        <div class="code-snippet">// 1. Create a header that turns security off ("none")
+var myHeader = { alg: "none", typ: "JWT" };
+
+// 2. Create a payload that sets your role to "admin"
+var myPayload = { sub: "operator", role: "admin", iat: Math.floor(Date.now()/1000) };
+
+// 3. Turn them into the correct format using the website's own encoder
+var token = b64url(myHeader) + "." + b64url(myPayload) + ".";
+
+// 4. Print it out so you can copy it
+console.log(token);</div>
+        <p>Paste this logic into the prompt line at the bottom of the <strong>Console</strong> tab and press <kbd>Enter</kbd>.</p>
+      </li>
+
+      <li>
+        <strong>Copy Your New Token String:</strong>
+        <p>An encoded string will output directly beneath your code script execution layout:</p>
+        <div class="code-snippet" style="color:var(--primary);">eyJhbGciOiJub25lIiwidHlwIjoiSldUIid9.eyJzdWIiOiJvcGVyYXRvciIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxNjA0NDQxNn0.</div>
+        <p>Highlight the <u>entire output string</u> from the first character to the <strong>very last period (<span class="highlight">.</span>)</strong> and copy it (<kbd>Ctrl + C</kbd> / <kbd>Cmd + C</kbd>).</p>
+        <p>⚠️ <em><strong>Crucial Detail:</strong> Do not omit that trailing dot! It signals to the validation gateway that the signature field is intentionally present but empty.</em></p>
+      </li>
+
+      <li>
+        <strong>Close the Panel UI:</strong>
+        <p>Click the small <strong>X</strong> icon at the top right of the developer tool panel to return your focus back to the standard page template.</p>
+      </li>
+
+      <li>
+        <strong>Submit and Extract the Flag:</strong>
+        <ul>
+          <li>Find the form field labeled <strong>Submit token</strong> on the application interface.</li>
+          <li>Paste your forged token into the textarea layout and click <strong>Authenticate</strong>.</li>
+          <li>The application will process your payload data and expose the active flag parameters directly on screen.</li>
+          <li>Copy the flag output, paste it into the <strong>Submit recovered flag</strong> input field below, and commit your completion check!</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <p class="muted small" style="margin-top:18px;">All visible artifacts on this node are decoys.</p>
+</main>
+</body>
+</html>

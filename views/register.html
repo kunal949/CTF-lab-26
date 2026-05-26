@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LAB · Internal Evaluation</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>LAB</strong> Internal Evaluation Platform</div>
+  <nav>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/admin/login">Admin</a>
+  </nav>
+</header>
+
+<main class="shell fade">
+  <section class="hero">
+    <div class="eyebrow">Authorized access · Build 2.4.1</div>
+    <h1>Welcome to the lab.</h1>
+    <p>Authorized participants only. This environment evaluates technical reasoning across ten progressive operational phases. All telemetry is recorded and tied to your operator session.</p>
+  </section>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="eyebrow">Protocol</div>
+      <h2 class="section-title">Operating constraints</h2>
+      <ul style="list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:10px;color:var(--muted);font-size:13px;">
+        <li>— No external internet usage</li>
+        <li>— Browser developer tools are permitted</li>
+        <li>— Flags are case-sensitive</li>
+        <li>— Observation matters more than speed</li>
+        <li>— Think carefully before submitting</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Operator registration</div>
+      <h2 class="section-title">Initialize session</h2>
+      <form id="reg" style="margin-top:22px;">
+        <div class="field">
+          <label for="name">Operator name</label>
+          <input id="name" name="name" required maxlength="60" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label for="pc">Station / PC number</label>
+          <input id="pc" name="pc_number" required maxlength="30" autocomplete="off"/>
+        </div>
+        <button class="btn" type="submit">Enter</button>
+        <div id="err"></div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script src="/static/js/app.js"></script>
+<script>
+document.getElementById('reg').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const pc = document.getElementById('pc').value.trim();
+  const r = await LAB.api('/api/auth/register', { name, pc_number: pc });
+  if (r.ok) window.location.href = r.redirect;
+  else document.getElementById('err').innerHTML = '<div class="alert">Registration failed</div>';
+});
+</script>
+</body></html>
