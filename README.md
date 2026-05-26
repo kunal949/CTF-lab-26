@@ -85,7 +85,7 @@ or newer.
 Open a terminal and run:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ctf-platform.git
+git clone https://github.com/kunal949/CTF-lab-26
 ```
 
 Move into the project folder:
